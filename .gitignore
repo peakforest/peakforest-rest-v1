@@ -1,0 +1,10 @@
+target
+.classpath
+.project
+.settings
+.svn
+*.class
+src/test/resources/outputFiles
+bin
+*~
+*.jar
