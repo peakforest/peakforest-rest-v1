@@ -137,6 +137,105 @@ public class FullScanLCMSSpectrumImpl extends SpectralDatabaseImpl {
 		return json;
 	}
 
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/range-rt-min/{min}/{max}")
+	public String getRangeRTspectra(@PathParam("min") double min, @PathParam("max") double max,
+			@QueryParam("callback") String callback, @QueryParam("columns") String columnCode,
+			@QueryParam("token") String token) {
+		// check token
+		if (token == null || token.trim().length() == 0 || !TokenManagementService.isTokenValide(token)) {
+			return TokenManagementService.tokenError(callback);
+		}
+		String[] columns = null;
+		if (columnCode != null && !columnCode.equals(""))
+			columns = columnCode.split(",");
+		// List<Double> peakListDouble = new ArrayList<Double>();
+
+		// based on POST method
+		String json = getLCMSspectraRangeRTmin(min, max, columns);
+		// returning JSON or JSONP
+		if (callback != null && callback.trim().length() > 0)
+			return callback + "(" + json + ")";
+		return json;
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/search-naive/{peaklist}/{delta}")
+	public String getNMRspectra(@PathParam("peaklist") String peaklist, @PathParam("delta") double delta,
+			@QueryParam("callback") String callback, @QueryParam("matchAll") Boolean matchAll,
+			@QueryParam("polarity") String polarity, @QueryParam("resolution") String resolution,
+			@QueryParam("rt_min") Double rtMin, @QueryParam("rt_max") Double rtMax,
+			@QueryParam("column") String columnCode, @QueryParam("rt_meoh_min") Double rtMeOHMin,
+			@QueryParam("rt_meoh_max") Double rtMeOHMax, @QueryParam("token") String token) {
+		// check token
+		if (token == null || token.trim().length() == 0 || !TokenManagementService.isTokenValide(token)) {
+			return TokenManagementService.tokenError(callback);
+		}
+		//
+		String[] dataPeakList = peaklist.split(",");
+		List<Double> peakListDouble = new ArrayList<Double>();
+		for (String s : dataPeakList)
+			try {
+				peakListDouble.add(Double.parseDouble(s));
+			} catch (NumberFormatException e) {
+			}
+		// based on POST method
+		String json = getLCMSspectraNaive(peakListDouble, delta, matchAll, polarity, resolution, rtMin, rtMax,
+				rtMeOHMin, rtMeOHMax, columnCode);
+		// returning JSON or JSONP
+		if (callback != null && callback.trim().length() > 0)
+			return callback + "(" + json + ")";
+		return json;
+	}
+
+	/**
+	 * @param id
+	 * @param callback
+	 * @param token
+	 * @return
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/all/ids")
+	public String getAllIds(@QueryParam("callback") String callback, @QueryParam("token") String token) {
+		// check token
+		if (token == null || token.trim().length() == 0 || !TokenManagementService.isTokenValide(token)) {
+			return TokenManagementService.tokenError(callback);
+		}
+
+		// based on POST method
+		String json = getAllIds();
+		// returning JSON or JSONP
+		if (callback != null && callback.trim().length() > 0)
+			return callback + "(" + json + ")";
+		return json;
+	}
+
+	/**
+	 * @param id
+	 * @param callback
+	 * @param token
+	 * @return
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/all/count")
+	public String count(@QueryParam("callback") String callback, @QueryParam("token") String token) {
+		// check token
+		if (token == null || token.trim().length() == 0 || !TokenManagementService.isTokenValide(token)) {
+			return TokenManagementService.tokenError(callback);
+		}
+
+		// based on POST method
+		String json = count();
+		// returning JSON or JSONP
+		if (callback != null && callback.trim().length() > 0)
+			return callback + "(" + json + ")";
+		return json;
+	}
+
 	///////////////////////////////////////////////////////////////////////////
 	// PRIVATE
 	///////////////////////////////////////////////////////////////////////////
@@ -364,36 +463,6 @@ public class FullScanLCMSSpectrumImpl extends SpectralDatabaseImpl {
 		return ret;
 	}
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/search-naive/{peaklist}/{delta}")
-	public String getNMRspectra(@PathParam("peaklist") String peaklist, @PathParam("delta") double delta,
-			@QueryParam("callback") String callback, @QueryParam("matchAll") Boolean matchAll,
-			@QueryParam("polarity") String polarity, @QueryParam("resolution") String resolution,
-			@QueryParam("rt_min") Double rtMin, @QueryParam("rt_max") Double rtMax,
-			@QueryParam("column") String columnCode, @QueryParam("rt_meoh_min") Double rtMeOHMin,
-			@QueryParam("rt_meoh_max") Double rtMeOHMax, @QueryParam("token") String token) {
-		// check token
-		if (token == null || token.trim().length() == 0 || !TokenManagementService.isTokenValide(token)) {
-			return TokenManagementService.tokenError(callback);
-		}
-		//
-		String[] dataPeakList = peaklist.split(",");
-		List<Double> peakListDouble = new ArrayList<Double>();
-		for (String s : dataPeakList)
-			try {
-				peakListDouble.add(Double.parseDouble(s));
-			} catch (NumberFormatException e) {
-			}
-		// based on POST method
-		String json = getLCMSspectraNaive(peakListDouble, delta, matchAll, polarity, resolution, rtMin, rtMax,
-				rtMeOHMin, rtMeOHMax, columnCode);
-		// returning JSON or JSONP
-		if (callback != null && callback.trim().length() > 0)
-			return callback + "(" + json + ")";
-		return json;
-	}
-
 	/**
 	 * @param min
 	 * @param max
@@ -464,29 +533,6 @@ public class FullScanLCMSSpectrumImpl extends SpectralDatabaseImpl {
 		return ret;
 	}
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/range-rt-min/{min}/{max}")
-	public String getRangeRTspectra(@PathParam("min") double min, @PathParam("max") double max,
-			@QueryParam("callback") String callback, @QueryParam("columns") String columnCode,
-			@QueryParam("token") String token) {
-		// check token
-		if (token == null || token.trim().length() == 0 || !TokenManagementService.isTokenValide(token)) {
-			return TokenManagementService.tokenError(callback);
-		}
-		String[] columns = null;
-		if (columnCode != null && !columnCode.equals(""))
-			columns = columnCode.split(",");
-		// List<Double> peakListDouble = new ArrayList<Double>();
-
-		// based on POST method
-		String json = getLCMSspectraRangeRTmin(min, max, columns);
-		// returning JSON or JSONP
-		if (callback != null && callback.trim().length() > 0)
-			return callback + "(" + json + ")";
-		return json;
-	}
-
 	@SuppressWarnings("unchecked")
 	private String getLCMSspectraRangeRTmin(double min, double max, String[] columns) {
 		// init
@@ -507,6 +553,56 @@ public class FullScanLCMSSpectrumImpl extends SpectralDatabaseImpl {
 			// resultsNMR = resultsNMR.subList(0, 50);
 			Object data = (Object) resultsNMR;
 			ret = mapper.writeValueAsString(Utils.prune((List<AbstractDatasetObject>) data));
+		} catch (Exception e) {
+			// Error
+			ObjectError err = new ObjectError(e.getMessage());
+			try {
+				ret = mapper.writeValueAsString(err);
+			} catch (IOException e1) {
+				ret = "{ success: false, error: \"" + e1.getMessage() + "\"}";
+			}
+		}
+		return ret;
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	private String getAllIds() {
+		// init
+		String dbName = Utils.getBundleConfElement("hibernate.connection.database.dbName");
+		String login = Utils.getBundleConfElement("hibernate.connection.database.username");
+		String password = Utils.getBundleConfElement("hibernate.connection.database.password");
+
+		// run
+		ObjectMapper mapper = new ObjectMapper();
+		String ret;
+		try {
+			List<Long> resultSp = FullScanLCSpectrumManagementService.getAllIDs(dbName, login, password);
+			ret = mapper.writeValueAsString((Object) resultSp);
+		} catch (Exception e) {
+			// Error
+			ObjectError err = new ObjectError(e.getMessage());
+			try {
+				ret = mapper.writeValueAsString(err);
+			} catch (IOException e1) {
+				ret = "{ success: false, error: \"" + e1.getMessage() + "\"}";
+			}
+		}
+		return ret;
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	private String count() {
+		// init
+		String dbName = Utils.getBundleConfElement("hibernate.connection.database.dbName");
+		String login = Utils.getBundleConfElement("hibernate.connection.database.username");
+		String password = Utils.getBundleConfElement("hibernate.connection.database.password");
+
+		// run
+		ObjectMapper mapper = new ObjectMapper();
+		String ret;
+		try {
+			Long resultSp = FullScanLCSpectrumManagementService.count(dbName, login, password);
+			ret = mapper.writeValueAsString((Object) resultSp);
 		} catch (Exception e) {
 			// Error
 			ObjectError err = new ObjectError(e.getMessage());

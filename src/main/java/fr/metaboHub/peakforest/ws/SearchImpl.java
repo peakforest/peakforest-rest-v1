@@ -129,10 +129,13 @@ public class SearchImpl extends SpectralDatabaseImpl {
 		String ret;
 		try {
 			// search
-			searchResults = SearchService.search(query, false, max, dbName, login, password);
+			Map<String, Object> searchResultsRaw = SearchService.search(query, false, max, dbName, login,
+					password);
 			// prune
 			searchResults.put("compounds",
-					Utils.prune((List<AbstractDatasetObject>) searchResults.get("compounds")));
+					Utils.prune((List<AbstractDatasetObject>) searchResultsRaw.get("compounds")));
+			searchResults.put("compoundNames",
+					Utils.prune((List<AbstractDatasetObject>) searchResultsRaw.get("compoundNames")));
 			// searchResults.put("compoundNames",
 			// Utils.prune((List<AbstractDatasetObject>) searchResults.get("compoundNames")));
 			ret = mapper.writeValueAsString(searchResults);
@@ -183,12 +186,15 @@ public class SearchImpl extends SpectralDatabaseImpl {
 		String ret;
 		try {
 			// search
-			searchResults = SearchService.search(query, false, max, dbName, login, password);
+			Map<String, Object> rawSearchResults = SearchService.search(query, false, max, dbName, login,
+					password);
 			// prune
 			// searchResults.put("compounds",
 			// Utils.prune((List<AbstractDatasetObject>) searchResults.get("compounds")));
 			searchResults.put("compoundNames",
-					Utils.prune((List<AbstractDatasetObject>) searchResults.get("compoundNames")));
+					Utils.prune((List<AbstractDatasetObject>) rawSearchResults.get("compoundNames")));
+			searchResults.put("compounds",
+					Utils.prune((List<AbstractDatasetObject>) rawSearchResults.get("compounds")));
 			ret = mapper.writeValueAsString(searchResults);
 		} catch (Exception e) {
 			// Error

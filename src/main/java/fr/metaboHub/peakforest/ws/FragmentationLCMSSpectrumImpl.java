@@ -221,6 +221,63 @@ public class FragmentationLCMSSpectrumImpl extends SpectralDatabaseImpl {
 		return json;
 	}
 
+	/**
+	 * @param precursorMass
+	 * @param mode
+	 * @param precursorMassDelta
+	 * @param precursorMassUnit
+	 * @param callback
+	 * @param token
+	 * @return
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/from-precursor/{precursorMass}")
+	public String getSpectraFromPrecursor(
+			/* path param */
+			@PathParam("precursorMass") double precursorMass,
+			/* mandatory query param */
+			@QueryParam("mode") String mode, // default: BOTH
+			/* opt query param */
+			@QueryParam("precursorMassDelta") Double precursorMassDelta, // default: 0.1
+			// @QueryParam("precursorMassUnit") String precursorMassUnit, // default: MZ
+			/* default query param */
+			@QueryParam("callback") String callback, @QueryParam("token") String token) {
+
+		// 0 - check token
+		if (!TokenManagementService.isTokenValide(token)) {
+			return TokenManagementService.tokenError(callback);
+		}
+
+		// I - check user params. (mandatory and optional)
+		Short polarity = FragmentationLCSpectrum.getStandardizedPolarity(mode);
+		double precursorMassDeltaChecked = 0.1;
+		if (precursorMassDelta != null)
+			precursorMassDeltaChecked = precursorMassDelta;
+		// String precursorMassUnitChecked = "MZ";
+		// if (precursorMassUnit != null)
+		// switch (precursorMassUnit.trim().toUpperCase()) {
+		// case "PPM":
+		// precursorMassUnitChecked = "PPM";
+		// break;
+		// case "MZ":
+		// case "M/Z":
+		// default:
+		// break;
+		// }
+
+		// II - API processing
+
+		// III - return
+		// based on LOCAL method
+		String json = getSpectraFromPrecursor(precursorMass, precursorMassDeltaChecked, polarity);
+
+		// returning JSON or JSONP
+		if (callback != null && callback.trim().length() > 0)
+			return callback + "(" + json + ")";
+		return json;
+
+	}
 	///////////////////////////////////////////////////////////////////////////
 	// PRIVATE
 	///////////////////////////////////////////////////////////////////////////
@@ -558,6 +615,42 @@ public class FragmentationLCMSSpectrumImpl extends SpectralDatabaseImpl {
 		try {
 			List<FragmentationLCSpectrum> resultsNMR = FragmentationLCSpectrumManagementService
 					.getRangeRTmin(min, max, colAsList, dbName, login, password);
+			// if (resultsNMR.size() > max)
+			// resultsNMR = resultsNMR.subList(0, 50);
+			Object data = (Object) resultsNMR;
+			ret = mapper.writeValueAsString(Utils.prune((List<AbstractDatasetObject>) data));
+		} catch (Exception e) {
+			// Error
+			ObjectError err = new ObjectError(e.getMessage());
+			try {
+				ret = mapper.writeValueAsString(err);
+			} catch (IOException e1) {
+				ret = "{ success: false, error: \"" + e1.getMessage() + "\"}";
+			}
+		}
+		return ret;
+	}
+
+	/**
+	 * @param precursorMass
+	 * @param precursorMassDeltaChecked
+	 * @param polarity
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private String getSpectraFromPrecursor(double precursorMass, double precursorMassDeltaChecked,
+			Short polarity) {
+		// init
+		String dbName = Utils.getBundleConfElement("hibernate.connection.database.dbName");
+		String login = Utils.getBundleConfElement("hibernate.connection.database.username");
+		String password = Utils.getBundleConfElement("hibernate.connection.database.password");
+		// zzbop
+		String ret = null;
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			List<FragmentationLCSpectrum> resultsNMR = FragmentationLCSpectrumManagementService
+					.getFromPrecursor(precursorMass, precursorMassDeltaChecked, polarity, dbName, login,
+							password);
 			// if (resultsNMR.size() > max)
 			// resultsNMR = resultsNMR.subList(0, 50);
 			Object data = (Object) resultsNMR;

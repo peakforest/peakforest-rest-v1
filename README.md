@@ -5,7 +5,7 @@ Metadata
 -----------
 
  * **@name**: PeakForest - REST
- * **@version**: 1.8
+ * **@version**: 2.0
  * **@authors**: Nils Paulhe <nils.paulhe@inra.fr>
  * **@date creation**: 2014/02/11
  * **@main usage**: PeakForest database's Webservice REST 
