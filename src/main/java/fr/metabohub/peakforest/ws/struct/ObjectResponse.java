@@ -1,19 +1,20 @@
-package fr.metaboHub.peakforest.ws.struct;
+package fr.metabohub.peakforest.ws.struct;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Base use to create a object formated response (json or xml)
+ * Create an object response use to for XML / Json response
  * 
  * @author Nils Paulhe
  * 
  */
-public class ObjectError {
+public class ObjectResponse {
+
 	/* ********************************************************************* */
 	/* Class parameters */
 	/* ********************************************************************* */
 	boolean success = false;
-	String error = null;
+	String error = "";
 
 	/* ********************************************************************* */
 	/* Class constructors */
@@ -21,19 +22,8 @@ public class ObjectError {
 	/**
 	 * basic empty constructor
 	 */
-	public ObjectError() {
+	public ObjectResponse() {
 		super();
-		this.error = "";
-	}
-
-	/**
-	 * create an Error response an set the message
-	 * 
-	 * @param error
-	 */
-	public ObjectError(String error) {
-		super();
-		this.error = error;
 	}
 
 	/* ********************************************************************* */
@@ -48,8 +38,7 @@ public class ObjectError {
 	}
 
 	/**
-	 * @param success
-	 *            the success to set
+	 * @param success the success to set
 	 */
 	public void setSuccess(boolean success) {
 		this.success = success;
@@ -64,8 +53,7 @@ public class ObjectError {
 	}
 
 	/**
-	 * @param error
-	 *            the error to set
+	 * @param error the error to set
 	 */
 	public void setError(String error) {
 		this.error = error;

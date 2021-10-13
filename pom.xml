@@ -1,33 +1,42 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>fr.metabohub</groupId>
 	<artifactId>peakforest-rest</artifactId>
-	<version>2.0-dev</version>
+	<version>2.1.0</version>
 	<packaging>war</packaging>
+
 	<name>PeakForest - REST</name>
+	<url>https://services.pfem.clermont.inra.fr/gitlab/peakforest/peakforest-rest</url>
+	<description>PeakForest database's Webservice REST</description>
 
 	<properties>
 		<!-- project conf -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.java.version>1.8</project.build.java.version>
 		<!-- database tools version -->
-		<!-- hibernate version core / entitymanager -->
-		<hibernate.version>4.2.2.Final</hibernate.version>
-		<hibernate-validator-version>5.0.1.Final</hibernate-validator-version>
-		<javassist.version>3.18.0-GA</javassist.version>
-		<!-- sgbd -->
-		<mysql.version>5.1.25</mysql.version>
-		<postgresql.version>9.2-1003-jdbc4</postgresql.version>
-		<!-- <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format> -->
+		<mysql.version>8.0.17</mysql.version>
+		<hibernate.version>5.4.4.Final</hibernate.version>
+		<!-- peakforest version -->
+		<peakforest.version>2.1.0</peakforest.version>
+		<!-- maven dep. -->
+		<lombok.version>1.18.10</lombok.version>
+		<!-- git and build informations -->
 		<timestamp>${maven.build.timestamp}</timestamp>
-		<!-- PeakForest5Ever -->
-		<peakforest.version>2.0</peakforest.version>
+		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+		<!-- for tests -->
+		<junit.version>4.12</junit.version>
 	</properties>
+
 	<scm>
-		<connection>scm:git:git://git@pfemw3.clermont.inra.fr:dev-team/peakforest-rest.git</connection>
+		<connection>scm:git:git@services.pfem.clermont.inra.fr:peakforest/peakforest-rest.git</connection>
 	</scm>
+
 	<dependencies>
+
 		<!-- MySQL database driver -->
 		<dependency>
 			<groupId>mysql</groupId>
@@ -35,148 +44,131 @@
 			<version>${mysql.version}</version>
 		</dependency>
 
-		<!-- PostgreSQL database driver -->
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>${postgresql.version}</version>
-		</dependency>
-
-		<!-- Hibernate dependencies -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate</artifactId>
-			<version>3.5.4-Final</version>
-			<type>pom</type>
-		</dependency>
+		<!-- hibernate persistence -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>${hibernate.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>${hibernate-validator-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>1.1.0.Final</version>
-		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>javax.persistence</groupId> -->
-		<!-- <artifactId>persistence-api</artifactId> -->
-		<!-- <version>1.0.2</version> -->
-		<!-- </dependency> -->
-		<dependency>
-			<groupId>org.javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>${javassist.version}</version>
-		</dependency>
 
-		<!-- WS-server -->
+		<!-- REST webserver -->
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-server</artifactId>
-			<version>1.6</version>
+			<version>1.8</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.16</version>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>javax</groupId> -->
-		<!-- <artifactId>javaee-web-api</artifactId> -->
-		<!-- <version>6.0</version> -->
-		<!-- </dependency> -->
-
-		<!-- generate json -->
 		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-server</artifactId>
-			<version>1.8</version>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>6.0</version>
+			<scope>provided</scope>
 		</dependency>
+
+		<!-- read / write json -->
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-json</artifactId>
 			<version>1.8</version>
 		</dependency>
-
-		<!-- Consumes json -->
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
 		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-server</artifactId>
-			<version>1.8</version>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.10.0</version>
 		</dependency>
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-json</artifactId>
-			<version>1.8</version>
-		</dependency>
-
-		<!-- spring hibernate missing dep -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.springframework</groupId> -->
-		<!-- <artifactId>spring-orm</artifactId> -->
-		<!-- <version>3.1.1.RELEASE</version> -->
-		<!-- </dependency> -->
 
 		<!-- avoid maven error with metaboHUB lib. -->
+		<!-- <dependency> -->
+		<!-- <groupId>fr.metabohub</groupId> -->
+		<!-- <artifactId>peakforest-datamodel</artifactId> -->
+		<!-- <version>${peakforest.version}</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>fr.metabohub</groupId> -->
+		<!-- <artifactId>peakforest-utils</artifactId> -->
+		<!-- <version>${peakforest.version}</version> -->
+		<!-- </dependency> -->
 		<dependency>
 			<groupId>fr.metabohub</groupId>
-			<artifactId>peakforest-datamodel</artifactId>
+			<artifactId>io-spectrafile-api</artifactId>
 			<version>${peakforest.version}</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/WebContent/WEB-INF/lib/peakforest-datamodel-${peakforest.version}.jar</systemPath>
+			<exclusions>
+				<exclusion>
+					<groupId>fr.metabohub</groupId>
+					<artifactId>externalbanks-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>fr.metabohub</groupId>
 			<artifactId>peakforest-api</artifactId>
 			<version>${peakforest.version}</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/WebContent/WEB-INF/lib/peakforest-api-${peakforest.version}.jar</systemPath>
+			<exclusions>
+				<exclusion>
+					<groupId>fr.metabohub</groupId>
+					<artifactId>externalbanks-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>fr.metabohub</groupId>
+					<artifactId>peakforest-peakmatching-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
-		<!-- similarity measures between String data -->
+		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		<dependency>
-			<groupId>com.github.mpkorstanje</groupId>
-			<artifactId>simmetrics-core</artifactId>
-			<version>3.2.0</version>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
-		<!-- junit test -->
+		<!-- junit test - https://mvnrepository.com/artifact/junit/junit -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
 			<scope>test</scope>
-			<version>4.8.2</version>
+		</dependency>
+		<!-- json library for tests -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<scope>test</scope>
+			<version>20180813</version>
 		</dependency>
 
 	</dependencies>
 
 	<build>
-		<finalName>peakforest-rest-${buildNumberShort}</finalName>
+
+		<finalName>peakforest-rest-${project.version}</finalName>
+		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
 		<resources>
 			<resource>
 				<directory>${basedir}/src/main/resources</directory>
+				<filtering>true</filtering>
 				<includes>
 					<include>**/*.properties</include>
 					<include>**/*.xml</include>
 				</includes>
+			</resource>
+			<resource>
+				<directory>${basedir}/WebContent/WEB-INF/lib</directory>
 				<filtering>true</filtering>
+				<excludes>
+					<exclude>*-sources.jar</exclude>
+				</excludes>
 			</resource>
 			<resource>
 				<directory>${basedir}/WebContent/WEB-INF/lib</directory>
@@ -186,30 +178,35 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
-		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+
 		<plugins>
-			<!-- java version -->
+
+			<!-- set java version -->
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.8.1</version>
 				<configuration>
 					<source>${project.build.java.version}</source>
 					<target>${project.build.java.version}</target>
+					<showWarnings>true</showWarnings>
 				</configuration>
 			</plugin>
+
 			<!-- war -->
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.2</version>
+				<version>2.6</version>
 				<configuration>
 					<warSourceDirectory>${basedir}/WebContent</warSourceDirectory>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
+
 			<!-- clean -->
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
-				<version>2.5</version>
+				<version>3.1.0</version>
 				<configuration>
 					<filesets>
 						<fileset>
@@ -222,64 +219,66 @@
 					</filesets>
 				</configuration>
 			</plugin>
-			<!-- git superm power -->
+
+			<!-- git infos for build -->
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>buildnumber-maven-plugin</artifactId>
-				<version>1.4</version>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<version>2.2.4</version>
 				<executions>
 					<execution>
 						<phase>validate</phase>
 						<goals>
-							<goal>create</goal>
+							<goal>revision</goal>
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.1.1</version>
 				<configuration>
-					<archive>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-						<manifestEntries>
-							<git-SHA-1>${buildNumber}</git-SHA-1>
-						</manifestEntries>
-					</archive>
+					<!-- human-readable part of the version number -->
+					<dateFormat>yyyyMMdd-HHmmss</dateFormat>
+					<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+					<!-- somehow necessary. otherwise the variables are not available in 
+						the pom -->
+					<generateGitPropertiesFile>false</generateGitPropertiesFile>
 				</configuration>
 			</plugin>
-			<!-- short sha1 -->
+
+			<!-- javadoc -->
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>1.7</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.1.1</version>
+				<configuration>
+					<doctitle>My API for ${project.name} ${project.version}</doctitle> <!-- Used by javadoc:javadoc goal -->
+					<windowtitle>My API for ${project.name} ${project.version}</windowtitle> <!-- Used by javadoc:javadoc goal -->
+					<testDoctitle>My Test API for ${project.name} ${project.version}</testDoctitle> <!-- Used by javadoc:test-javadoc goal -->
+					<testWindowtitle>My Test API for ${project.name} ${project.version}</testWindowtitle> <!-- Used by javadoc:test-javadoc goal -->
+					<failOnWarnings>true</failOnWarnings>
+				</configuration>
+			</plugin>
+
+			<!-- code coverage -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.5</version>
 				<executions>
 					<execution>
-						<id>regex-property</id>
+						<id>pre-unit-test</id>
 						<goals>
-							<goal>regex-property</goal>
+							<goal>prepare-agent</goal>
 						</goals>
-						<configuration>
-							<name>buildNumberShort</name>
-							<value>${buildNumber}</value>
-							<regex>^([0-9a-f]{8}).*$</regex>
-							<replacement>$1</replacement>
-							<failIfNoMatch>false</failIfNoMatch>
-						</configuration>
+					</execution>
+					<execution>
+						<id>post-unit-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
-			<!-- skip test -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
+
 		</plugins>
 	</build>
 </project>
