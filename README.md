@@ -1,4 +1,4 @@
-[![pipeline status](https://services.pfem.clermont.inra.fr/gitlab/peakforest/peakforest-rest/badges/dev/pipeline.svg)](https://services.pfem.clermont.inra.fr/gitlab/peakforest/peakforest-rest/commits/dev)
+[![pipeline status](https://services.pfem.clermont.inrae.fr/gitlab/peakforest/peakforest-rest/badges/dev/pipeline.svg)](https://services.pfem.clermont.inrae.fr/gitlab/peakforest/peakforest-rest/commits/dev)
 
 # PeakForest - REST
 
@@ -21,7 +21,7 @@ Use [STS](https://spring.io/tools) IDE.
 
 ### Installing
 
-- get project data `git clone git@services.pfem.clermont.inra.fr:peakforest/peakforest-rest.git`
+- get project data `git clone git@services.pfem.clermont.inrae.fr:peakforest/peakforest-rest.git`
 - Build command `mvn clean install` produce:
    - `peakforest-rest-X.war` (java bin file, ready for a tomcat server deploy; `X` matching the current version number)
 
@@ -62,14 +62,14 @@ Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c6
 
 ## Versioning
 
-We use [GitLab](https://services.pfem.clermont.inra.fr/gitlab/your/project) for versioning. 
-For the versions available, see the [tags on this repository](https://services.pfem.clermont.inra.fr/gitlab/your/project/tags). 
+We use [GitLab](https://services.pfem.clermont.inrae.fr/gitlab/your/project) for versioning. 
+For the versions available, see the [tags on this repository](https://services.pfem.clermont.inrae.fr/gitlab/your/project/tags). 
 
 ## Authors
 
 * **Firstname lastname** - *Initial work* - 
 
-See also the list of [contributors](https://services.pfem.clermont.inra.fr/gitlab/your/projectcontributors) who participated in this project.
+See also the list of [contributors](https://services.pfem.clermont.inrae.fr/gitlab/your/projectcontributors) who participated in this project.
 
 ## License
 

@@ -18,6 +18,7 @@ import fr.metabohub.peakforest.model.AbstractDatasetObject;
 import fr.metabohub.peakforest.model.spectrum.FullScanLCSpectrum;
 import fr.metabohub.peakforest.security.TokenManagementService;
 import fr.metabohub.peakforest.services.spectrum.FullScanLCSpectrumManagementService;
+import fr.metabohub.peakforest.services.spectrum.IChromatographySpectrumService;
 import fr.metabohub.peakforest.utils.PeakForestPruneUtils;
 import fr.metabohub.peakforest.ws.utils.JsonDumperTools;
 
@@ -373,7 +374,7 @@ public class FullScanLCMSSpectrumImpl extends SpectralDatabaseImpl {
 			List<FullScanLCSpectrum> results = FullScanLCSpectrumManagementService
 					.search(peaklist.toArray(new Double[peaklist.size()]), delta, matchAll, pola, reso);
 			// extra filter
-			results = FullScanLCSpectrumManagementService.filter(results, rtMin, rtMax, rtMeOHmin, rtMeOHmmax, column);
+			results = IChromatographySpectrumService.filter(results, rtMin, rtMax, rtMeOHmin, rtMeOHmmax, column);
 			// prune
 			results = (List<FullScanLCSpectrum>) PeakForestPruneUtils.pruneFullScanLCMSspectra(results);
 			// return

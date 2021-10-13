@@ -16,8 +16,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 import fr.metabohub.peakforest.dao.spectrum.FragmentationLCSpectrumDao;
 import fr.metabohub.peakforest.model.AbstractDatasetObject;
 import fr.metabohub.peakforest.model.spectrum.FragmentationLCSpectrum;
+import fr.metabohub.peakforest.model.spectrum.MassSpectrum;
 import fr.metabohub.peakforest.security.TokenManagementService;
 import fr.metabohub.peakforest.services.spectrum.FragmentationLCSpectrumManagementService;
+import fr.metabohub.peakforest.services.spectrum.IChromatographySpectrumService;
 import fr.metabohub.peakforest.utils.PeakForestPruneUtils;
 import fr.metabohub.peakforest.ws.utils.JsonDumperTools;
 
@@ -343,47 +345,22 @@ public class FragmentationLCMSSpectrumImpl extends SpectralDatabaseImpl {
 
 	private String getLCMSspectraNaive(List<Double> peaklist, double delta, Boolean matchAll, String polarity,
 			String resolution, Double rtMin, Double rtMax, Double rtMeOHmin, Double rtMeOHmmax, String column) {
-		Short pola = null;
-		Short reso = null;
-		if (matchAll == null)
-			matchAll = true;
-		if (polarity != null)
-			switch (polarity.trim().toUpperCase()) {
-			case "POS":
-			case "POSITIVE":
-				pola = FragmentationLCSpectrum.MASS_SPECTRUM_POLARITY_POSITIVE;
-				break;
-			case "NEG":
-			case "NEGATIVE":
-				pola = FragmentationLCSpectrum.MASS_SPECTRUM_POLARITY_NEGATIVE;
-				break;
-			default:
-				break;
-			}
-
-		if (resolution != null)
-			switch (resolution.trim().toUpperCase()) {
-			case "HIGH":
-			case "HIGHT":
-				reso = FragmentationLCSpectrum.MASS_SPECTRUM_RESOLUTION_HIGH;
-				break;
-			case "LOW":
-				reso = FragmentationLCSpectrum.MASS_SPECTRUM_RESOLUTION_LOW;
-				break;
-			default:
-				break;
-			}
+		// init
+		Short pola = MassSpectrum.getStandardizedPolarity(polarity);
+		Short reso = MassSpectrum.getStandardizedResolution(resolution);
+		if (matchAll == null) {
+			matchAll = Boolean.TRUE;
+		}
 
 		// run
-		ObjectMapper mapper = new ObjectMapper();
+		final ObjectMapper mapper = new ObjectMapper();
 		String ret;
 		try {
 			// search
 			List<FragmentationLCSpectrum> results = FragmentationLCSpectrumManagementService
 					.search(peaklist.toArray(new Double[peaklist.size()]), delta, matchAll, pola, reso);
 			// extra filter
-			results = FragmentationLCSpectrumManagementService.filter(results, rtMin, rtMax, rtMeOHmin, rtMeOHmmax,
-					column);
+			results = IChromatographySpectrumService.filter(results, rtMin, rtMax, rtMeOHmin, rtMeOHmmax, column);
 			// prune
 			results = (List<FragmentationLCSpectrum>) PeakForestPruneUtils.pruneFragmentationLCMSspectra(results);
 			// return
