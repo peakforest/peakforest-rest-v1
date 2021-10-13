@@ -1,26 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	id="WebApp_ID" version="2.5">
-	<display-name>SpectralDatabase-ws-rest</display-name>
+	<display-name>PeakForest - REST</display-name>
 	<servlet>
-		<!-- <servlet-name>Spectral Database REST Service</servlet-name> -->
-		<!-- <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class> -->
-		<!-- <init-param> -->
-		<!-- <param-name></param-name> -->
-		<!-- <param-value>SpectralDatabase-ws-rest</param-value> -->
-		<!-- </init-param> -->
-		<servlet-name>Spectral Database REST Service</servlet-name>
+		<servlet-name>PeakForest - REST</servlet-name>
 		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.packages</param-name>
-			<param-value>fr.metaboHub.spectralDatabaseWS</param-value>
+			<param-value>fr.metaboHub.peakforest.ws</param-value>
+		</init-param>
+		<init-param>
+			<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+			<param-value>true</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>Spectral Database REST Service</servlet-name>
+		<servlet-name>PeakForest - REST</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
+
+	<!-- Require HTTPS for everything except /img (favicon) and /css. -->
+	<!-- <security-constraint> -->
+	<!-- <web-resource-collection> -->
+	<!-- <web-resource-name>HTTPSOnly</web-resource-name> -->
+	<!-- <url-pattern>/*</url-pattern> -->
+	<!-- </web-resource-collection> -->
+	<!-- <user-data-constraint> -->
+	<!-- <transport-guarantee>CONFIDENTIAL</transport-guarantee> -->
+	<!-- </user-data-constraint> -->
+	<!-- </security-constraint> -->
+	<!-- <security-constraint> -->
+	<!-- <web-resource-collection> -->
+	<!-- <web-resource-name>HTTPSOrHTTP</web-resource-name> -->
+	<!-- <url-pattern>*.ico</url-pattern> -->
+	<!-- <url-pattern>/img/*</url-pattern> -->
+	<!-- <url-pattern>/css/*</url-pattern> -->
+	<!-- </web-resource-collection> -->
+	<!-- <user-data-constraint> -->
+	<!-- <transport-guarantee>NONE</transport-guarantee> -->
+	<!-- </user-data-constraint> -->
+	<!-- </security-constraint> -->
 </web-app>

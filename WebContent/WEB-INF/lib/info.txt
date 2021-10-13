@@ -1,0 +1,5 @@
+jar in this directory to add in buildpath:
+	peakforest-datamodel-X.jar
+	peakforest-api-X.jar
+	
+Note: replace `X` with the current version number of PeakForest

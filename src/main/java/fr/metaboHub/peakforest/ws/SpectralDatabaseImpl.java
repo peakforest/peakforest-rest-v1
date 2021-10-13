@@ -1,4 +1,4 @@
-package fr.metaboHub.spectralDatabaseWS;
+package fr.metaboHub.peakforest.ws;
 
 import java.lang.management.ManagementFactory;
 

@@ -2,15 +2,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.metabohub</groupId>
-	<artifactId>SpectralDatabase-ws-rest</artifactId>
-	<version>0.1</version>
+	<artifactId>peakforest-rest</artifactId>
+	<version>1.8-beta</version>
 	<packaging>war</packaging>
-	<name>SpectralDatabase-ws-rest</name>
+	<name>PeakForest - REST</name>
 
 	<properties>
 		<!-- project conf -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.build.java.version>1.7</project.build.java.version>
+		<project.build.java.version>1.8</project.build.java.version>
 		<!-- database tools version -->
 		<!-- hibernate version core / entitymanager -->
 		<hibernate.version>4.2.2.Final</hibernate.version>
@@ -19,8 +19,14 @@
 		<!-- sgbd -->
 		<mysql.version>5.1.25</mysql.version>
 		<postgresql.version>9.2-1003-jdbc4</postgresql.version>
+		<!-- <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format> -->
+		<timestamp>${maven.build.timestamp}</timestamp>
+		<!-- PeakForest5Ever -->
+		<peakforest.version>1.8</peakforest.version>
 	</properties>
-
+	<scm>
+		<connection>scm:git:git://git@pfemw3.clermont.inra.fr:dev-team/peakforest-rest.git</connection>
+	</scm>
 	<dependencies>
 		<!-- MySQL database driver -->
 		<dependency>
@@ -63,11 +69,11 @@
 			<artifactId>validation-api</artifactId>
 			<version>1.1.0.Final</version>
 		</dependency>
-		<dependency>
-			<groupId>javax.persistence</groupId>
-			<artifactId>persistence-api</artifactId>
-			<version>1.0.2</version>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>javax.persistence</groupId> -->
+		<!-- <artifactId>persistence-api</artifactId> -->
+		<!-- <version>1.0.2</version> -->
+		<!-- </dependency> -->
 		<dependency>
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
@@ -109,12 +115,47 @@
 			<version>1.8</version>
 		</dependency>
 
+		<!-- Consumes json -->
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>1.8</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-json</artifactId>
+			<version>1.8</version>
+		</dependency>
+
 		<!-- spring hibernate missing dep -->
 		<!-- <dependency> -->
 		<!-- <groupId>org.springframework</groupId> -->
 		<!-- <artifactId>spring-orm</artifactId> -->
 		<!-- <version>3.1.1.RELEASE</version> -->
 		<!-- </dependency> -->
+
+		<!-- avoid maven error with metaboHUB lib. -->
+		<dependency>
+			<groupId>fr.metabohub</groupId>
+			<artifactId>peakforest-datamodel</artifactId>
+			<version>${peakforest.version}</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/WebContent/WEB-INF/lib/peakforest-datamodel-${peakforest.version}.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>fr.metabohub</groupId>
+			<artifactId>peakforest-api</artifactId>
+			<version>${peakforest.version}</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/WebContent/WEB-INF/lib/peakforest-api-${peakforest.version}.jar</systemPath>
+		</dependency>
+
+		<!-- similarity measures between String data -->
+		<dependency>
+			<groupId>com.github.mpkorstanje</groupId>
+			<artifactId>simmetrics-core</artifactId>
+			<version>3.2.0</version>
+		</dependency>
 
 		<!-- junit test -->
 		<dependency>
@@ -127,8 +168,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>spectralDatabase-ws-rest</finalName>
-		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+		<finalName>peakforest-rest-${buildNumberShort}</finalName>
 		<resources>
 			<resource>
 				<directory>${basedir}/src/main/resources</directory>
@@ -138,7 +178,15 @@
 				</includes>
 				<filtering>true</filtering>
 			</resource>
+			<resource>
+				<directory>${basedir}/WebContent/WEB-INF/lib</directory>
+				<excludes>
+					<exclude>*-sources.jar</exclude>
+				</excludes>
+				<filtering>true</filtering>
+			</resource>
 		</resources>
+		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
 		<plugins>
 			<!-- java version -->
 			<plugin>
@@ -158,15 +206,72 @@
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
-			<!-- build the classes JAR (non-test classes) -->
-			<!-- <plugin> -->
-			<!-- <groupId>org.apache.maven.plugins</groupId> -->
-			<!-- <artifactId>maven-war-plugin</artifactId> -->
-			<!-- <version>2.4</version> -->
-			<!-- <configuration> -->
-			<!-- <attachClasses>true</attachClasses> -->
-			<!-- </configuration> -->
-			<!-- </plugin> -->
+			<!-- clean -->
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${basedir}/WebContent/WEB-INF/lib/</directory>
+							<includes>
+								<include>**/*-sources.jar</include>
+							</includes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+			<!-- git superm power -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+						<manifestEntries>
+							<git-SHA-1>${buildNumber}</git-SHA-1>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<!-- short sha1 -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>regex-property</id>
+						<goals>
+							<goal>regex-property</goal>
+						</goals>
+						<configuration>
+							<name>buildNumberShort</name>
+							<value>${buildNumber}</value>
+							<regex>^([0-9a-f]{8}).*$</regex>
+							<replacement>$1</replacement>
+							<failIfNoMatch>false</failIfNoMatch>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<!-- skip test -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -177,5 +282,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

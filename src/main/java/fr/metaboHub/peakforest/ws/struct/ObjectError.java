@@ -1,20 +1,19 @@
-package fr.metaboHub.spectralDatabaseWS.struct;
+package fr.metaboHub.peakforest.ws.struct;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
- * Create an object response use to for XML / Json response
+ * Base use to create a object formated response (json or xml)
  * 
  * @author Nils Paulhe
  * 
  */
-public class ObjectResponse {
-
+public class ObjectError {
 	/* ********************************************************************* */
 	/* Class parameters */
 	/* ********************************************************************* */
 	boolean success = false;
-	String sddURL = null;
-	String error = "";
-	String htmlZipURL = "";
+	String error = null;
 
 	/* ********************************************************************* */
 	/* Class constructors */
@@ -22,8 +21,19 @@ public class ObjectResponse {
 	/**
 	 * basic empty constructor
 	 */
-	public ObjectResponse() {
+	public ObjectError() {
 		super();
+		this.error = "";
+	}
+
+	/**
+	 * create an Error response an set the message
+	 * 
+	 * @param error
+	 */
+	public ObjectError(String error) {
+		super();
+		this.error = error;
 	}
 
 	/* ********************************************************************* */
@@ -32,6 +42,7 @@ public class ObjectResponse {
 	/**
 	 * @return the success
 	 */
+	@JsonProperty("success")
 	public boolean isSuccess() {
 		return success;
 	}
@@ -45,23 +56,9 @@ public class ObjectResponse {
 	}
 
 	/**
-	 * @return the sddURL
-	 */
-	public String getSddURL() {
-		return sddURL;
-	}
-
-	/**
-	 * @param sddURL
-	 *            the sddURL to set
-	 */
-	public void setSddURL(String sddURL) {
-		this.sddURL = sddURL;
-	}
-
-	/**
 	 * @return the error
 	 */
+	@JsonProperty("error")
 	public String getError() {
 		return error;
 	}
@@ -72,21 +69,6 @@ public class ObjectResponse {
 	 */
 	public void setError(String error) {
 		this.error = error;
-	}
-
-	/**
-	 * @return the htmlZipURL
-	 */
-	public String getHtmlZipURL() {
-		return htmlZipURL;
-	}
-
-	/**
-	 * @param htmlZipURL
-	 *            the url of generated file to set
-	 */
-	public void setHtmlZipURL(String htmlZipURL) {
-		this.htmlZipURL = htmlZipURL;
 	}
 
 }
