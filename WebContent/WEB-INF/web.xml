@@ -20,7 +20,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>PeakForest - REST</servlet-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/v1/*</url-pattern>
 	</servlet-mapping>
 
 	<!-- Require HTTPS for everything except /img (favicon) and /css. -->

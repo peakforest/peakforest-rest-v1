@@ -30,7 +30,6 @@ stages:
   - build
   - tests
   - code_report
-  - local_install
   - artifacts
 
 build:
@@ -47,6 +46,10 @@ tests:
   services:
     - name: mysql:5.7
       alias: mysql-test-server
+  except:
+    refs:
+      - master
+      - tags
   before_script:
     - mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=$MYSQL_HOSTNAME --execute="DROP DATABASE IF EXISTS $MYSQL_DATABASE;  CREATE DATABASE $MYSQL_DATABASE CHARACTER SET utf8; "
     - mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=$MYSQL_HOSTNAME --execute="DROP USER IF EXISTS $MYSQL_USERNAME;          CREATE USER $MYSQL_USERNAME IDENTIFIED BY '$MYSQL_USERPASSW'; "
@@ -67,6 +70,10 @@ code report:
   tags:
     - docker
   image: "pfem/ssh-utils"
+  except:
+    refs:
+      - master
+      - tags
   before_script:
     - mkdir -p ~/.ssh
     - eval $(ssh-agent -s)
@@ -80,13 +87,6 @@ code report:
     - scp -r target/site/jacoco $SSH_USER@$SSH_HOST:/var/www/html/$FOLDER_REPORT/$FOLDER_PROJECT
     - scp -r target/site/apidocs $SSH_USER@$SSH_HOST:/var/www/html/$FOLDER_JAVADOC/$FOLDER_PROJECT
 
-install:
-  stage: local_install
-  tags:
-    - docker
-  script:
-    - mvn $MAVEN_CLI_OPTS -Dmaven.test.skip=true package
-    
 # build artifact for dev. branches
 war-tmp:
   stage: artifacts
